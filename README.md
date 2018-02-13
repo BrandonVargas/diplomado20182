@@ -1,4 +1,4 @@
-# Diplomado 2018-2
+# Diplomado iOS UNAM
 
 ## Ejercicios y ejemplos del diplomado de iOSLab UNAM 2018 
 

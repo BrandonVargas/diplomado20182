@@ -18,6 +18,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         questionLabel.text = questions[currentQuestionIndex]
+        print("Views: ", view.subviews.count)
     }
 
     override func didReceiveMemoryWarning() {
@@ -50,7 +51,6 @@ class ViewController: UIViewController {
         let answer: String = answers[currentQuestionIndex]
         answerLabel.text = answer
     }
-
 
 }
 

@@ -6,21 +6,7 @@ var str = "Hello, playground"
 
 
 func isPrime(n: Int) -> Bool{
-    if (n <= 1) {
-        return false
-    }else if (n <= 3) {
-        return true
-    }else if (n % 2 == 0 || n % 3 == 0) {
-        return false
-    }
-    var i = 5
-    while (i * i <= n) {
-        if (n % i == 0 || n % (i + 2) == 0) {
-            return false
-        }
-    }
-    i = i + 6
-    return true
+    return n > 1 && !(2..<n).contains { n % $0 == 0 }
 }
 
 isPrime(n: 23)
@@ -34,20 +20,21 @@ func fibonacci(n: Int) -> Int {
     }
 }
 
-for index in 1...10 {
-    let x = fibonacci(n: index)
-    if (isPrime(n: x)) {
-        print(x)
+func fibonacciPrime(n: Int) {
+    var temp = 0
+    for index in 0...n {
+        temp = fibonacci(n: index)
+        if (isPrime(n: temp)) {
+            print(temp)
+        }
     }
 }
 
+fibonacciPrime(n: 10)
+
 func isPalindrome(str: String) -> Bool {
     let str2 = str.replacingOccurrences(of: "\\W", with: "", options: .regularExpression, range: nil)
-    if (str2.elementsEqual(str2.reversed())) {
-        return true
-    } else {
-        return false
-    }
+    return str2.elementsEqual(str2.reversed())
 }
 
 var palindromo = "anita lava la tina"
@@ -67,6 +54,6 @@ func sameChars(_ stringA: String,con stringB: String) -> Bool {
     return true
 }
 
-sameChars("acac", con: "caca")
+sameChars("loho", con: "hola")
 
 

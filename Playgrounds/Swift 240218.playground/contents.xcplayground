@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<playground version='6.0' target-platform='ios'>
+    <pages>
+        <page name='arrays'/>
+        <page name='optionals'/>
+        <page name='dictionaries'/>
+        <page name='sets'/>
+    </pages>
+</playground>

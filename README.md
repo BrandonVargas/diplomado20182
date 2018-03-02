@@ -1,5 +1,4 @@
 # Diplomado iOS UNAM
 
-## Ejercicios y ejemplos del diplomado de iOSLab UNAM 2018 
-
-* Pseudocódigo de Fibonacci y Factorial
+## Tareas 
+-> https://github.com/BrandonVargas/diplomado20182/tree/develop/Tareas

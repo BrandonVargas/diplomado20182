@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="SimpleProfile" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="profileIcon" translatesAutoresizingMaskIntoConstraints="NO" id="tqo-aF-CJB">
+                                <rect key="frame" x="104" y="44" width="167.5" height="128"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="167.5" id="OCF-L4-nuK"/>
+                                    <constraint firstAttribute="height" constant="128" id="VIP-9i-CKq"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Amazing Profile" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hKb-i2-Fix">
+                                <rect key="frame" x="20" y="196" width="335" height="26.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="22"/>
+                                <color key="textColor" name="honeydew"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qOl-DF-efk">
+                                <rect key="frame" x="20" y="611" width="335" height="36"/>
+                                <color key="backgroundColor" name="light-blue"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="Let's Fun">
+                                    <color key="titleColor" name="space-cadet"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="lestFun:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ZU5-Oz-0qx"/>
+                                </connections>
+                            </button>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="aCL-2e-Prg">
+                                <rect key="frame" x="20" y="297" width="335" height="294"/>
+                                <color key="backgroundColor" name="red-desire"/>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                <color key="textColor" name="honeydew"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.roundedCorners">
+                                        <integer key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </textView>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="EV0-B8-UtA">
+                                <rect key="frame" x="20" y="247" width="335" height="30"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sdE-28-P7Y">
+                                        <rect key="frame" x="0.0" y="0.0" width="110.5" height="30"/>
+                                        <color key="backgroundColor" name="honeydew"/>
+                                        <state key="normal" title="Edit">
+                                            <color key="titleColor" name="queen-blue"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="10"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kqh-SN-zy2">
+                                        <rect key="frame" x="112.5" y="0.0" width="110" height="30"/>
+                                        <color key="backgroundColor" name="honeydew"/>
+                                        <state key="normal" title="Save">
+                                            <color key="titleColor" name="queen-blue"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="10"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZjO-hb-UTU">
+                                        <rect key="frame" x="224.5" y="0.0" width="110.5" height="30"/>
+                                        <color key="backgroundColor" name="honeydew"/>
+                                        <state key="normal" title="Delete">
+                                            <color key="titleColor" name="queen-blue"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="10"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" name="space-cadet"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="qOl-DF-efk" secondAttribute="trailing" constant="20" id="4cK-6g-R2I"/>
+                            <constraint firstItem="aCL-2e-Prg" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="5dB-AX-NiD"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="qOl-DF-efk" secondAttribute="bottom" constant="20" id="BGQ-wo-QbW"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="hKb-i2-Fix" secondAttribute="trailing" constant="20" id="Iht-hc-YrJ"/>
+                            <constraint firstItem="EV0-B8-UtA" firstAttribute="top" secondItem="hKb-i2-Fix" secondAttribute="bottom" constant="24" id="IjE-pY-rU4"/>
+                            <constraint firstItem="hKb-i2-Fix" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="K5X-n2-NxE"/>
+                            <constraint firstItem="tqo-aF-CJB" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="24" id="KaE-ib-Wdq"/>
+                            <constraint firstItem="hKb-i2-Fix" firstAttribute="top" secondItem="tqo-aF-CJB" secondAttribute="bottom" constant="24" id="OSS-v6-2xB"/>
+                            <constraint firstItem="qOl-DF-efk" firstAttribute="top" secondItem="aCL-2e-Prg" secondAttribute="bottom" constant="20" id="Swb-CP-cWA"/>
+                            <constraint firstItem="tqo-aF-CJB" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="104" id="YGI-Lo-bm6"/>
+                            <constraint firstItem="aCL-2e-Prg" firstAttribute="top" secondItem="EV0-B8-UtA" secondAttribute="bottom" constant="20" id="YpP-dU-6mz"/>
+                            <constraint firstItem="qOl-DF-efk" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="fGd-Uw-dDJ"/>
+                            <constraint firstItem="EV0-B8-UtA" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="ird-XM-4Uj"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="EV0-B8-UtA" secondAttribute="trailing" constant="20" id="laC-m4-fNK"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="aCL-2e-Prg" secondAttribute="trailing" constant="20" id="mYw-Fy-wbW"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="tqo-aF-CJB" secondAttribute="trailing" constant="104" id="xhv-hu-ZLW"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="buttonDelete" destination="ZjO-hb-UTU" id="k1F-Xo-Thd"/>
+                        <outlet property="buttonEdit" destination="sdE-28-P7Y" id="Sdq-zQ-OwH"/>
+                        <outlet property="buttonFun" destination="qOl-DF-efk" id="e3n-EL-6k5"/>
+                        <outlet property="buttonSave" destination="kqh-SN-zy2" id="R99-Lj-uop"/>
+                        <outlet property="labelProfileName" destination="hKb-i2-Fix" id="b7E-yc-77d"/>
+                        <outlet property="parentView" destination="8bC-Xf-vdC" id="hUX-T4-Hot"/>
+                        <outlet property="textViewContent" destination="aCL-2e-Prg" id="AAS-tT-8nX"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="36" y="31.934032983508249"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="profileIcon" width="256" height="256"/>
+        <namedColor name="honeydew">
+            <color red="0.94509803921568625" green="0.98039215686274506" blue="0.93333333333333335" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="light-blue">
+            <color red="0.6588235294117647" green="0.85490196078431369" blue="0.86274509803921573" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="queen-blue">
+            <color red="0.27058823529411763" green="0.4823529411764706" blue="0.61568627450980395" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="red-desire">
+            <color red="0.90196078431372551" green="0.22352941176470589" blue="0.27450980392156865" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="space-cadet">
+            <color red="0.11372549019607843" green="0.20784313725490197" blue="0.3411764705882353" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

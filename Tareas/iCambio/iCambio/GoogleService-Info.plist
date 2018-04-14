@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
+	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
+	<string>ca-app-pub-3940256099942544/4411468910</string>
+	<key>CLIENT_ID</key>
+	<string>501076980977-er65b54i2vq1dfr79kc1chsev8djju9r.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.501076980977-er65b54i2vq1dfr79kc1chsev8djju9r</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDrBKQ6mKh1WF2dPCJ7qKeQwrQFKIGIgLQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>501076980977</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>brandonvm.com.iCambio</string>
+	<key>PROJECT_ID</key>
+	<string>icambio-0</string>
+	<key>STORAGE_BUCKET</key>
+	<string>icambio-0.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<true></true>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<false></false>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:501076980977:ios:878af1f75b03b93c</string>
+	<key>DATABASE_URL</key>
+	<string>https://icambio-0.firebaseio.com</string>
+</dict>
+</plist>

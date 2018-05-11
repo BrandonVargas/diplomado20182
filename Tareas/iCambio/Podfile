@@ -8,7 +8,12 @@ target 'iCambio' do
   # Pods for iCambio
   pod 'Firebase/Core'
   pod 'Firebase/Auth'
+  pod 'Firebase/Firestore'
+  pod 'Firebase/Storage'
   pod 'FacebookCore'
   pod 'FacebookLogin'
+  pod 'CodableFirebase'
+  pod 'RxFirebase/Firestore'
+  pod 'RxFirebase/RemoteConfig'
 
 end

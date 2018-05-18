@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 import FirebaseFirestore
 
-class AddArticleViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
+class AddArticleViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
 
     @IBOutlet weak var articleFirstImageView: UIImageView!
     @IBOutlet weak var articleSecondImageView: UIImageView!
@@ -47,6 +47,7 @@ class AddArticleViewController: UIViewController, UIImagePickerControllerDelegat
         imagePicker.delegate = self
         priceRangePicker.delegate = self
         priceRangePicker.dataSource = self
+        articleNameTextField.delegate = self
         let tapFirst = UITapGestureRecognizer(target: self, action: #selector(AddArticleViewController.showActionSheetFirst))
         let tapSecond = UITapGestureRecognizer(target: self, action: #selector(AddArticleViewController.showActionSheetSecond))
         let tapThird = UITapGestureRecognizer(target: self, action: #selector(AddArticleViewController.showActionSheetThird))
@@ -64,6 +65,15 @@ class AddArticleViewController: UIViewController, UIImagePickerControllerDelegat
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        articleNameTextField.resignFirstResponder()
+        return true
     }
     
     //: MARK

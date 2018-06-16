@@ -12,8 +12,7 @@ struct Article: Codable {
     var userUID: String
     var name: String
     var pictures: Array<String>
-    var minPrice: Int
-    var maxPrice: Int
+    var description: String
     var offers: Int
     var available: Bool
 }

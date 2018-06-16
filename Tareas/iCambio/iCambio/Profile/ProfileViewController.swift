@@ -11,11 +11,14 @@ import FacebookLogin
 import Firebase
 import CodableFirebase
 import RxSwift
+import Kingfisher
 
 class ProfileViewController: UIViewController{
     
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var userImageView: UIImageView!
+    
+    let userImageURLCacheKey = "user_image"
     
     let disposeBag = DisposeBag()
     var userRepository: UserRepository? = nil
@@ -40,9 +43,16 @@ class ProfileViewController: UIViewController{
     
     func prepareUser() {
         userRepository = UserRepository()
-        currentUser = userRepository?.getCurrentUser()
-        userRepository?.userSubject.subscribe(onNext: { _ in
-            self.currentUser = self.userRepository?.getCurrentUser()
+        
+        userRepository?.fetchCurrentUser().subscribe(onNext: { user in
+            self.currentUser = user
+            self.toogleProfileVisibility(isHidden: false)
+        }, onError: { error in
+            self.showErrorDialogDefault(title: "Ups!", message: error.localizedDescription)
+        }).disposed(by: disposeBag)
+        
+        userRepository?.userSubject.subscribe(onNext: { currentUser in
+            self.currentUser = currentUser
             self.toogleProfileVisibility(isHidden: false)
         }, onError: { error in
             self.showLoginError(error)
@@ -61,7 +71,8 @@ class ProfileViewController: UIViewController{
         
         if (!isHidden && currentUser != nil) {
             userNameLabel.text = currentUser!.name
-            userImageView.downloadedFrom(link: currentUser!.imageURL)
+            let resource = ImageResource(downloadURL: URL(string: currentUser!.imageURL)!, cacheKey: userImageURLCacheKey)
+            userImageView.kf.setImage(with: resource)
         }
     }
 }
@@ -88,7 +99,8 @@ extension ProfileViewController: LoginButtonDelegate {
                     self.showLoginError(error)
                     return
                 }
-                let userData = try! FirestoreEncoder().encode( User(UID: (user?.uid)!,name: (user?.displayName)!, email: (user?.email)!, imageURL: (user?.photoURL?.absoluteString)!))
+                let imageURL = (user?.providerData[0].photoURL?.absoluteString)! + "?type=large"
+                let userData = try! FirestoreEncoder().encode(User(UID: (user?.uid)!,name: (user?.displayName)!, email: (user?.email)!, imageURL: imageURL, rating: nil, comments: nil, settings: nil, location: nil))
                 self.userRepository?.saveUser(userData: userData)
             })
         }

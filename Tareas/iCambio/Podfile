@@ -15,5 +15,8 @@ target 'iCambio' do
   pod 'CodableFirebase'
   pod 'RxFirebase/Firestore'
   pod 'RxFirebase/RemoteConfig'
+  pod 'Kingfisher', '~> 4.0'
+  pod 'IQKeyboardManagerSwift'
+  pod 'FSPagerView'
 
 end

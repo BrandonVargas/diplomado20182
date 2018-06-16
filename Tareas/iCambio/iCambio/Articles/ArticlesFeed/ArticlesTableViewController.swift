@@ -8,15 +8,17 @@
 
 import UIKit
 import RxSwift
+import Kingfisher
 
-class ArticlesTableViewController: UITableViewController {
+class ArticlesTableViewController: UITableViewController, ArticlesTableView{
     
     private var articles: Array<Article> = []
-    var articlesPresenter: ArticlesPresenter? = nil
+    var articlesPresenter: ArticlesPresenterDelegate? = nil
+    let disposeBag = DisposeBag()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        articlesPresenter = ArticlesPresenter(viewController: self)
+        articlesPresenter = ArticlesPresenter(view: self)
         loadArticles()
     }
 
@@ -44,14 +46,26 @@ class ArticlesTableViewController: UITableViewController {
         
         let article: Article = articles[indexPath.row]
         
+        UserRepository().getUserImageWith(uid: article.userUID).subscribe(
+            onNext : { imageURL in
+                let resource = ImageResource(downloadURL: URL(string: imageURL)!, cacheKey: article.userUID)
+                cell.userImageView.kf.setImage(with: resource)
+        }).disposed(by: disposeBag)
+        
         cell.articleNameLabel.text = article.name
-        cell.valueLabel.text = "$\(article.minPrice) - $\(article.maxPrice)"
         
         if(article.pictures.count > 0) {
-            cell.articleImageView.downloadedFrom(link: article.pictures[0])
+            let resource = ImageResource(downloadURL: URL(string: article.pictures[0])!, cacheKey: article.pictures[0])
+            cell.articleImageView.kf.setImage(with: resource)
         }
         
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let detailViewController = storyboard?.instantiateViewController(withIdentifier: "ArticleDetailViewController") as! ArticleDetailViewController
+        detailViewController.article = articles[indexPath.row]
+        navigationController?.pushViewController(detailViewController, animated: true)
     }
     
     func loadArticles() {
@@ -63,5 +77,10 @@ class ArticlesTableViewController: UITableViewController {
         articles.insert(article, at: 0)
         self.tableView.reloadData()
     }
+    
 
+}
+
+protocol ArticlesTableView: BaseViewDelegate {
+    func addArticle(article: Article)
 }

@@ -10,13 +10,14 @@ import UIKit
 import RxSwift
 import FirebaseFirestore
 
-class AddArticleViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
+class AddArticleViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
 
     @IBOutlet weak var articleFirstImageView: UIImageView!
     @IBOutlet weak var articleSecondImageView: UIImageView!
     @IBOutlet weak var articleThirdImageView: UIImageView!
     @IBOutlet weak var articleNameTextField: UITextField!
-    @IBOutlet weak var priceRangePicker: UIPickerView!
+    @IBOutlet weak var articleDescriptionTextView: UITextView!
+    
     
     let disposeBag = DisposeBag()
     let articlesRepository = ArticlesRepository()
@@ -32,21 +33,11 @@ class AddArticleViewController: UIViewController, UIImagePickerControllerDelegat
     
     var currentImageView = 1
     var imagesSelected: Array<String> = []
-    let maxPrice = 10000
-    var priceRanges: [(min: Int, max:Int)] {
-        var tempPR: [(min: Int, max:Int)] = []
-        for minPrice in stride(from: 0, to: maxPrice, by: 100) {
-            tempPR.append((min: minPrice, max: (minPrice + 100)))
-        }
-        return tempPR
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         addArticlePresenter = AddArticlePresenter(viewController: self)
         imagePicker.delegate = self
-        priceRangePicker.delegate = self
-        priceRangePicker.dataSource = self
         articleNameTextField.delegate = self
         let tapFirst = UITapGestureRecognizer(target: self, action: #selector(AddArticleViewController.showActionSheetFirst))
         let tapSecond = UITapGestureRecognizer(target: self, action: #selector(AddArticleViewController.showActionSheetSecond))
@@ -60,6 +51,10 @@ class AddArticleViewController: UIViewController, UIImagePickerControllerDelegat
         
         articleThirdImageView.addGestureRecognizer(tapThird)
         articleThirdImageView.isUserInteractionEnabled = true
+        
+        articleDescriptionTextView.layer.borderColor = UIColor.lightGray.withAlphaComponent(0.3).cgColor
+        articleDescriptionTextView.layer.borderWidth = 1.0
+        articleDescriptionTextView.layer.cornerRadius = 10
     }
 
     override func didReceiveMemoryWarning() {
@@ -148,43 +143,34 @@ class AddArticleViewController: UIViewController, UIImagePickerControllerDelegat
     }
 
     @IBAction func publishArticleClicked(_ sender: UIButton) {
-        let name = self.articleNameTextField.text
-        let minPrice = self.priceRanges[self.priceRangePicker.selectedRow(inComponent: 0)].min
-        let maxPrice = self.priceRanges[self.priceRangePicker.selectedRow(inComponent: 0)].max
-        let article = Article(userUID: "sin_asignar", name: name!, pictures: [], minPrice: minPrice, maxPrice: maxPrice, offers: 0, available: true)
-        
-        if (imagesSelected.count < 1) {
-            showErrorDialogDefault(title: "Ups!",message: "Debes publicar tu articulo con al menos una foto")
-        } else if (name?.isEmpty)!{
-            showErrorDialogDefault(title: "Ups!",message: "Tu articulo necesita un nombre")
-        }else {
-            addArticlePresenter?.publishArticle(article: article, imagesSelected:imagesSelected)
+        if let user = UserRepository().getCurrentFireUser() {
+            let name = self.articleNameTextField.text
+            let description = self.articleDescriptionTextView.text
+            let article = Article(userUID: user.uid, name: name!, pictures: [], description: description! , offers: 0, available: true)
+            
+            if (imagesSelected.count < 1) {
+                showErrorDialogDefault(title: "Ups!",message: "Debes publicar tu articulo con al menos una foto")
+            } else if (name?.isEmpty)!{
+                showErrorDialogDefault(title: "Ups!",message: "Tu articulo necesita un nombre")
+            }else {
+                addArticlePresenter?.publishArticle(article: article, imagesSelected:imagesSelected)
+            }
+        } else {
+            let profileViewController: ProfileViewController = storyboard?.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
+            self.navigationController?.pushViewController(profileViewController, animated: true)
         }
     }
     
     func toggle(loading: Bool) {
         if loading {
-            spinnerView = UIViewController.displaySpinner(onView: self.view)
+            spinnerView = displaySpinner(onView: self.view)
         } else {
-            UIViewController.removeSpinner(spinner: spinnerView)
+            removeSpinner(spinner: spinnerView)
         }
     }
     
     func close() {
         navigationController?.popViewController(animated: true)
-    }
-    
-    // MARK: Picker View
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return priceRanges.count
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return "$\(priceRanges[row].min) - $\(priceRanges[row].max)"
     }
     
     // MARK: private functions

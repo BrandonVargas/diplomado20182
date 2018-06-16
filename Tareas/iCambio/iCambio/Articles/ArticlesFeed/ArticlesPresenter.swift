@@ -8,22 +8,27 @@
 
 import RxSwift
 
-class ArticlesPresenter {
-    var viewController: ArticlesTableViewController
-    let articlesRepository = ArticlesRepository()
+class ArticlesPresenter: ArticlesPresenterDelegate {
+    var view: ArticlesTableView
+    var articlesRepository: ArticlesRepositoryDelegate? = nil
     let disposeBag = DisposeBag()
     
-    init(viewController: ArticlesTableViewController) {
-        self.viewController = viewController
+    init(view: ArticlesTableView) {
+        self.view = view
+        articlesRepository = ArticlesRepository()
     }
     
     func loadAndListenAllArticles() {
-        articlesRepository.articlesSubject.subscribe(onNext: { (article) in
-            self.viewController.addArticle(article: article)
+        articlesRepository?.getArticlesSubject().subscribe(onNext: { (article) in
+            self.view.addArticle(article: article)
         }, onError: { error in
-            self.viewController.showErrorDialogDefault(title: "Error",message: "Ocurrio un error: \(error)")
+           self.view.showErrorDialogDefault(title: "Error",message: "Ocurrio un error: \(error)")
         })
             .disposed(by: disposeBag)
-        articlesRepository.listenAriticlesUpdates()
+        articlesRepository?.listenAriticlesUpdates()
     }
+}
+
+protocol ArticlesPresenterDelegate {
+    func loadAndListenAllArticles()
 }

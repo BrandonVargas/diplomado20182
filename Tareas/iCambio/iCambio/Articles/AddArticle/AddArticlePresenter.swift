@@ -20,7 +20,6 @@ class AddArticlePresenter {
     
     func publishArticle(article: Article, imagesSelected: Array<String>) {
         var article = article
-        article.userUID = (UserRepository().getCurrentUser()?.UID)!
         viewController.toggle(loading: true)
         let uploadImagesCallBack: (_ :Array<String>, _ :Error?) -> Void = { imagesURLs, error in
             if error != nil {

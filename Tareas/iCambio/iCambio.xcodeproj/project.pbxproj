@@ -17,6 +17,7 @@
 		CA82235120771B9F00B2D8C0 /* ArticlesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA82235020771B9F00B2D8C0 /* ArticlesTableViewController.swift */; };
 		CA82235520771DB500B2D8C0 /* Article.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA82235420771DB500B2D8C0 /* Article.swift */; };
 		CA82235C20792CD400B2D8C0 /* ArticleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA82235B20792CD400B2D8C0 /* ArticleTableViewCell.swift */; };
+		CA9C52CB20CC24F9007B5811 /* ArticleDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9C52CA20CC24F9007B5811 /* ArticleDetailViewController.swift */; };
 		CACF6994209AB32E001B9C77 /* AddArticleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CACF6993209AB32E001B9C77 /* AddArticleViewController.swift */; };
 		CAD0005420A2748C000D976D /* AddArticlePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAD0005320A2748C000D976D /* AddArticlePresenter.swift */; };
 		CAD0005A20A282ED000D976D /* ArticlesPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAD0005920A282ED000D976D /* ArticlesPresenter.swift */; };
@@ -26,6 +27,7 @@
 		CAD5B8AD2054E98B00693112 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CAD5B8AC2054E98B00693112 /* Assets.xcassets */; };
 		CAD5B8B02054E98B00693112 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CAD5B8AE2054E98B00693112 /* LaunchScreen.storyboard */; };
 		CAD5B90A2064BA0200693112 /* Lobster-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CAD5B9082064B7DB00693112 /* Lobster-Regular.ttf */; };
+		CAE9EBA820B0A5FC0032907E /* BaseViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAE9EBA720B0A5FC0032907E /* BaseViewDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +41,7 @@
 		CA82235020771B9F00B2D8C0 /* ArticlesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticlesTableViewController.swift; sourceTree = "<group>"; };
 		CA82235420771DB500B2D8C0 /* Article.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Article.swift; sourceTree = "<group>"; };
 		CA82235B20792CD400B2D8C0 /* ArticleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleTableViewCell.swift; sourceTree = "<group>"; };
+		CA9C52CA20CC24F9007B5811 /* ArticleDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleDetailViewController.swift; sourceTree = "<group>"; };
 		CACF6993209AB32E001B9C77 /* AddArticleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddArticleViewController.swift; sourceTree = "<group>"; };
 		CAD0005320A2748C000D976D /* AddArticlePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddArticlePresenter.swift; sourceTree = "<group>"; };
 		CAD0005920A282ED000D976D /* ArticlesPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticlesPresenter.swift; sourceTree = "<group>"; };
@@ -50,6 +53,7 @@
 		CAD5B8AF2054E98B00693112 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CAD5B8B12054E98B00693112 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CAD5B9082064B7DB00693112 /* Lobster-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lobster-Regular.ttf"; sourceTree = "<group>"; };
+		CAE9EBA720B0A5FC0032907E /* BaseViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewDelegate.swift; sourceTree = "<group>"; };
 		F4939C09C7FAE80EA2B8EB7A /* Pods-iCambio.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iCambio.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iCambio/Pods-iCambio.debug.xcconfig"; sourceTree = "<group>"; };
 		F5576EC62DD59B37393228DE /* Pods-iCambio.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iCambio.release.xcconfig"; path = "Pods/Target Support Files/Pods-iCambio/Pods-iCambio.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -83,9 +87,18 @@
 			path = extensions;
 			sourceTree = "<group>";
 		};
+		CAA401B420C3172600CF2864 /* ArticleDetail */ = {
+			isa = PBXGroup;
+			children = (
+				CA9C52CA20CC24F9007B5811 /* ArticleDetailViewController.swift */,
+			);
+			path = ArticleDetail;
+			sourceTree = "<group>";
+		};
 		CAD0005120A273FB000D976D /* Articles */ = {
 			isa = PBXGroup;
 			children = (
+				CAA401B420C3172600CF2864 /* ArticleDetail */,
 				CAEAEF3B20A2942B00B8997A /* ArticlesFeed */,
 				CAEAEF3A20A2940E00B8997A /* AddArticle */,
 				CA82235420771DB500B2D8C0 /* Article.swift */,
@@ -108,6 +121,7 @@
 			isa = PBXGroup;
 			children = (
 				CA063181209A347300FCC1CC /* BaseRepository.swift */,
+				CAE9EBA720B0A5FC0032907E /* BaseViewDelegate.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -267,10 +281,13 @@
 				"${BUILT_PRODUCTS_DIR}/CodableFirebase/CodableFirebase.framework",
 				"${BUILT_PRODUCTS_DIR}/FBSDKCoreKit/FBSDKCoreKit.framework",
 				"${BUILT_PRODUCTS_DIR}/FBSDKLoginKit/FBSDKLoginKit.framework",
+				"${BUILT_PRODUCTS_DIR}/FSPagerView/FSPagerView.framework",
 				"${BUILT_PRODUCTS_DIR}/FacebookCore/FacebookCore.framework",
 				"${BUILT_PRODUCTS_DIR}/FacebookLogin/FacebookLogin.framework",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/IQKeyboardManagerSwift/IQKeyboardManagerSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
@@ -288,10 +305,13 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CodableFirebase.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKCoreKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKLoginKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FSPagerView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FacebookCore.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FacebookLogin.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IQKeyboardManagerSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Kingfisher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
@@ -337,12 +357,14 @@
 				CA82235C20792CD400B2D8C0 /* ArticleTableViewCell.swift in Sources */,
 				CA00BAA920827BE800BC32AD /* GeneralExtensions.swift in Sources */,
 				CA82235520771DB500B2D8C0 /* Article.swift in Sources */,
+				CA9C52CB20CC24F9007B5811 /* ArticleDetailViewController.swift in Sources */,
 				CACF6994209AB32E001B9C77 /* AddArticleViewController.swift in Sources */,
 				CAD0005A20A282ED000D976D /* ArticlesPresenter.swift in Sources */,
 				CA00BAA120824F5400BC32AD /* UserRepository.swift in Sources */,
 				CA063182209A347300FCC1CC /* BaseRepository.swift in Sources */,
 				CA00BAA620825CF000BC32AD /* User.swift in Sources */,
 				CA82235120771B9F00B2D8C0 /* ArticlesTableViewController.swift in Sources */,
+				CAE9EBA820B0A5FC0032907E /* BaseViewDelegate.swift in Sources */,
 				CAD5B8A82054E98B00693112 /* ProfileViewController.swift in Sources */,
 				CAD5B8A42054E98B00693112 /* AppDelegate.swift in Sources */,
 			);

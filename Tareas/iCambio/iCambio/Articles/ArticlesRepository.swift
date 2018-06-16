@@ -11,35 +11,13 @@ import FirebaseStorage
 import CodableFirebase
 import RxSwift
 
-class ArticlesRepository: BaseRepository {
+class ArticlesRepository: BaseRepository, ArticlesRepositoryDelegate {
     
     let disposeBag = DisposeBag()
-    let articlesSubject = PublishSubject<Article>()
+    private let articlesSubject = PublishSubject<Article>()
     
     override init() {
         super.init()
-        //listenAriticlesUpdates()
-    }
-    
-    func getAllArticles(){
-        db.collection("articles")
-            .order(by: "updatedAt", descending: true)
-            .rx
-            .getDocuments()
-            .subscribe(onNext: { documents in
-                if documents.documents.count > 0 {
-                    print("Documents data: \(documents)")
-                    for document in documents.documents {
-                        print("Document data: \(document.data())")
-                        let article: Article = try! FirestoreDecoder().decode(Article.self, from: document.data())
-                        //self.articlesSubject.onNext(article)
-                    }
-                } else {
-                    print("Document does not exist")
-                }
-            }, onError: { error in
-                print("Error fetching snapshots: \(error)")
-            }).disposed(by: disposeBag)
     }
     
     func addArticle(article: Article) -> Observable<DocumentReference> {
@@ -157,4 +135,14 @@ class ArticlesRepository: BaseRepository {
             }
         }
     }
+    
+    func getArticlesSubject() -> PublishSubject<Article> {
+        return articlesSubject
+    }
+}
+
+protocol ArticlesRepositoryDelegate {
+    func addArticle(article: Article) -> Observable<DocumentReference>
+    func listenAriticlesUpdates()
+    func getArticlesSubject() -> PublishSubject<Article>
 }

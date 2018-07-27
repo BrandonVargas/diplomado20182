@@ -14,6 +14,7 @@ import RxSwift
 
 class UserRepository: BaseRepository {
     let userSubject: PublishSubject<User> = PublishSubject()
+    let usersImagesSubject: PublishSubject<(IndexPath,String)> = PublishSubject()
     let disposeBag = DisposeBag()
     
     func saveUser(userData: [String:Any]) {
@@ -24,6 +25,8 @@ class UserRepository: BaseRepository {
             .subscribe(onNext: { documents in
                 if let document = documents.documents.first {
                     print("Document data: \(document.data())")
+                    let currentUser = try! (FirestoreDecoder().decode(User.self, from: userData))
+                    self.userSubject.onNext(currentUser)
                     self.updateUserData(updatedData: userData , documentID: document.documentID)
                 } else {
                     print("Document does not exist")
@@ -45,23 +48,29 @@ class UserRepository: BaseRepository {
     
     func fetchCurrentUser() -> Observable<User> {
         // User is signed in.
+        //Auth.auth().currentUser?.getIDToken(completion: )
         return Observable.create { observer in
             if Auth.auth().currentUser != nil {
             self.db.collection("users")
-                .whereField("UID", isEqualTo: Auth.auth().currentUser?.uid ?? "0")
+                .whereField("UID", isEqualTo: Auth.auth().currentUser?.uid ?? "")
                 .rx
                 .getDocuments()
                 .subscribe(onNext: { documents in
                     if let document = documents.documents.first {
                         print("Document data: \(document.data())")
-                        try! observer.on(.next(FirestoreDecoder().decode(User.self, from: document.data())))
+                        let user = try! FirestoreDecoder().decode(User.self, from: document.data())
+                        observer.onNext(user)
+                        self.userSubject.onNext(user)
                     }
                 }, onError: { error in
                     print("Hubo un error \(error)")
-                    observer.on(.error(error))
+                    observer.onError(error)
+                    self.userSubject.onError(error)
                 }).disposed(by: self.disposeBag)
             } else {
                 // No user is signed in.
+                observer.onError(RxError.noElements)
+                self.userSubject.onError(RxError.noElements)
                 print("No authenticated")
             }
             return Disposables.create()
@@ -72,21 +81,39 @@ class UserRepository: BaseRepository {
         return Auth.auth().currentUser
     }
     
-    func getUserImageWith(uid: String) -> Observable<String> {
+    func getUserImageWith(uid: String) -> Observable<QuerySnapshot> {
+         /*return Observable.create({ observer in
+            
+         })*/
+            return self.db.collection("users")
+            .whereField("UID", isEqualTo: uid)
+            .rx
+            .getDocuments()
+            /*.subscribe(onNext: { documents in
+                if let document = documents.documents.first {
+                    print("Document data: \(document.data())")
+                    let user = try! FirestoreDecoder().decode(User.self, from: document.data())
+                    let resource = ImageResource(downloadURL: URL(string: user.imageURL)!, cacheKey: user.imageURL)
+                    cell.userImageView.kf.setImage(with: resource)
+                }
+            }, onError: { error in
+                print("Hubo un error \(error)")
+            }).disposed(by: self.disposeBag)*/
+        
+    }
+    
+    func getUserWithUID(_ uid: String) -> Observable<User> {
         return Observable.create { observer in
             self.db.collection("users")
                 .whereField("UID", isEqualTo: uid)
                 .rx
                 .getDocuments()
-                .subscribe(onNext: { documents in
-                    if let document = documents.documents.first {
-                        print("Document data: \(document.data())")
-                        let user = try! FirestoreDecoder().decode(User.self, from: document.data())
-                        observer.on(.next(user.imageURL))
-                    }
+                .subscribe(onNext: { snapshot in
+                    let user = try! FirestoreDecoder().decode(User.self, from: snapshot.documents[0].data())
+                    observer.onNext(user)
                 }, onError: { error in
-                    print("Hubo un error \(error)")
-                    observer.on(.error(error))
+                    observer.onError(error)
+                    print("Error obteniendo usuario con UID: \(uid)")
                 }).disposed(by: self.disposeBag)
             return Disposables.create()
         }
@@ -101,7 +128,6 @@ class UserRepository: BaseRepository {
             .subscribe(onNext: { _ in
                     print("Document successfully updated")
                     let currentUser = try! (FirestoreDecoder().decode(User.self, from: updatedData))
-                    self.userSubject.onNext(currentUser)
                 }, onError: { error in
                     print("Document not updated \(error)")
                 })

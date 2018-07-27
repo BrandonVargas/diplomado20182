@@ -7,12 +7,24 @@
 //
 
 import UIKit
+import Kingfisher
 
 class ArticleTableViewCell: UITableViewCell {
-
+    
     @IBOutlet weak var articleImageView: UIImageView!
     @IBOutlet weak var userImageView: UIImageView!
     @IBOutlet weak var articleNameLabel: UILabel!
+    
+    var item: Article? {
+        didSet {
+            guard let item = item else {
+                return
+            }
+            let resource = ImageResource(downloadURL: URL(string: item.pictures[0])!, cacheKey: item.pictures[0])
+            articleImageView?.kf.setImage(with: resource)
+            articleNameLabel.text = item.name
+        }
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()

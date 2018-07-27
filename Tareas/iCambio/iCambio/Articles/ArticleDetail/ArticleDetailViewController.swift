@@ -10,6 +10,7 @@ import UIKit
 import FSPagerView
 import Kingfisher
 import FirebaseAuth
+import RxSwift
 
 class ArticleDetailViewController: UIViewController {
 
@@ -29,6 +30,9 @@ class ArticleDetailViewController: UIViewController {
     @IBOutlet weak var offersButton: UIButton!
     
     var article: Article? = nil
+    var canMakeOffers: Bool = true
+    private var offersRepo = OffersRepository()
+    private var disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,9 +40,18 @@ class ArticleDetailViewController: UIViewController {
     }
     
     func setupView() {
-        if (article?.userUID == Auth.auth().currentUser?.uid){
-            offersButton.setTitle("Revisar ofertas", for: .normal)
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Editar", style: .done, target: self, action: #selector(editArticle))
+        if(canMakeOffers) {
+            offersRepo.hasUserOfferedFor(userId: Auth.auth().currentUser?.uid ?? "", articleId: (article?.id)!)
+                .subscribe(onNext: { hasOffered in
+                    self.offersButton.isEnabled = !hasOffered
+                    self.offersButton.setTitle("Ofertaste", for: .disabled)
+                }).disposed(by: disposeBag)
+            if (article?.userUID == Auth.auth().currentUser?.uid){
+                offersButton.setTitle("Revisar ofertas", for: .normal)
+                navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Editar", style: .done, target: self, action: #selector(editArticle))
+            }
+        } else {
+            offersButton.isHidden = true
         }
         self.title = article?.name
         descriptionTextView.text = article?.description
@@ -52,7 +65,21 @@ class ArticleDetailViewController: UIViewController {
         }
     }
     
-    @IBAction func OffersButtonClicked(_ sender: UIButton) {
+    @IBAction func offersButtonClicked(_ sender: UIButton) {
+        if let user = UserRepository().getCurrentFireUser() {
+            if (user.uid == article?.userUID) {
+                let articleOffersViewController: ArticleOffersViewController = storyboard?.instantiateViewController(withIdentifier: "ArticleOffersViewController") as! ArticleOffersViewController
+                articleOffersViewController.article = article
+                self.navigationController?.pushViewController(articleOffersViewController, animated: true)
+            } else {
+                let makeOfferViewController: MakeOfferViewController = storyboard?.instantiateViewController(withIdentifier: "MakeOfferViewController") as! MakeOfferViewController
+                makeOfferViewController.selectedArticle = article
+                self.navigationController?.pushViewController(makeOfferViewController, animated: true)
+            }
+        } else {
+            let profileViewController: ProfileViewController = storyboard?.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
+            self.navigationController?.pushViewController(profileViewController, animated: true)
+        }
     }
     
     @objc func editArticle() {

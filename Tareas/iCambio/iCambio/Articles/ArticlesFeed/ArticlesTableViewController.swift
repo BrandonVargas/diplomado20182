@@ -9,15 +9,21 @@
 import UIKit
 import RxSwift
 import Kingfisher
+import CodableFirebase
 
-class ArticlesTableViewController: UITableViewController, ArticlesTableView{
-    
+class ArticlesTableViewController: UITableViewController, ArticlesTableView {
+
+    @IBOutlet var articlesTableView: UITableView!
     private var articles: Array<Article> = []
     var articlesPresenter: ArticlesPresenterDelegate? = nil
+    var userUrls: Array<URL> = [].map { URL(string: $0)! }
     let disposeBag = DisposeBag()
+    let cellIdentifier = "ArticleTableViewCell"
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        //articlesTableView.prefetchDataSource = self
+        articlesTableView.register(UINib(nibName: cellIdentifier, bundle: nil), forCellReuseIdentifier: cellIdentifier)
         articlesPresenter = ArticlesPresenter(view: self)
         loadArticles()
     }
@@ -26,38 +32,44 @@ class ArticlesTableViewController: UITableViewController, ArticlesTableView{
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
     // MARK: - Table view data source
-
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return articles.count
     }
-
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cellIdentifier = "ArticleTableViewCell"
-        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? ArticleTableViewCell else {
             fatalError("The dequeued cell is not an instance of ArticleTableViewCell.")
         }
         
         let article: Article = articles[indexPath.row]
         
-        UserRepository().getUserImageWith(uid: article.userUID).subscribe(
-            onNext : { imageURL in
-                let resource = ImageResource(downloadURL: URL(string: imageURL)!, cacheKey: article.userUID)
+        cell.item = article
+        
+        /*UserRepository().getUserImageWith(uid: article.userUID, atIndex: indexPath)
+            .subscribe(onNext: { url in
+                let resource = ImageResource(downloadURL: URL(string: url)!, cacheKey: url)
                 cell.userImageView.kf.setImage(with: resource)
-        }).disposed(by: disposeBag)
+            }, onError: { error in
+                print("Hubo un error \(error)")
+            }).disposed(by: self.disposeBag)*/
         
-        cell.articleNameLabel.text = article.name
-        
-        if(article.pictures.count > 0) {
-            let resource = ImageResource(downloadURL: URL(string: article.pictures[0])!, cacheKey: article.pictures[0])
-            cell.articleImageView.kf.setImage(with: resource)
-        }
+        UserRepository().getUserImageWith(uid: article.userUID)
+            .subscribe(onNext: { documents in
+                if let document = documents.documents.first {
+                    print("Document data: \(document.data())")
+                    let user = try! FirestoreDecoder().decode(User.self, from: document.data())
+                    let resource = ImageResource(downloadURL: URL(string: user.imageURL)!, cacheKey: user.imageURL)
+                    cell.userImageView.kf.setImage(with: resource)
+                }
+            }, onError: { error in
+                print("Hubo un error \(error)")
+            }).disposed(by: self.disposeBag)
         
         return cell
     }
@@ -68,19 +80,34 @@ class ArticlesTableViewController: UITableViewController, ArticlesTableView{
         navigationController?.pushViewController(detailViewController, animated: true)
     }
     
+    // MARK: - ArticlesTableView
     func loadArticles() {
         articles.removeAll()
         articlesPresenter?.loadAndListenAllArticles()
     }
     
     func addArticle(article: Article) {
-        articles.insert(article, at: 0)
-        self.tableView.reloadData()
+        if (articles.contains(where: {art in art.id == article.id})){
+            articles = articles.filter{ $0.id != article.id }
+        } else {
+            articles.insert(article, at: 0)
+        }
+        articlesTableView.reloadData()
     }
     
-
+    func loadUserPhoto(index: IndexPath, stringURL: String) {
+        let resource = ImageResource(downloadURL: URL(string: stringURL)!, cacheKey: stringURL)
+        (articlesTableView.cellForRow(at: index) as! ArticleTableViewCell).userImageView.kf.setImage(with: resource)
+        articlesTableView.reloadRows(at: [index], with: UITableViewRowAnimation.none)
+    }
+    
+    func showErrorDialogDefault(error: String) {
+        showErrorDialogDefault(title: "Ocurrio un error", message: error)
+    }
 }
 
-protocol ArticlesTableView: BaseViewDelegate {
+protocol ArticlesTableView {
     func addArticle(article: Article)
+    func loadUserPhoto(index: IndexPath, stringURL: String)
+    func showErrorDialogDefault(error: String)
 }

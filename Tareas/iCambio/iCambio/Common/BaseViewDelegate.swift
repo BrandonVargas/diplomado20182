@@ -12,4 +12,5 @@ protocol BaseViewDelegate {
     func displaySpinner(onView : UIView) -> UIView
     func removeSpinner(spinner :UIView?)
     func showErrorDialogDefault(title: String, message: String)
+    func showDialogAction(title: String, message: String, action: () -> Void)
 }

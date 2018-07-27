@@ -29,7 +29,9 @@ class AddArticlePresenter {
             }
             article.pictures = imagesURLs
             self.articlesRepository.addArticle(article: article)
-                .subscribe(onError: { (error) in
+                .subscribe(onNext: { (documentReference) in
+                    self.articlesRepository.addArticleID(id: documentReference.documentID, path: documentReference.path)
+                }, onError: { (error) in
                     self.viewController.toggle(loading: false)
                     self.viewController.showErrorDialogDefault(title: "Error",message: "Tu articulo no se pudo publicar, intenta nuevamente")
                 }, onCompleted: {

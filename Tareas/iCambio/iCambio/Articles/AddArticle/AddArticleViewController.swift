@@ -146,7 +146,7 @@ class AddArticleViewController: UIViewController, UIImagePickerControllerDelegat
         if let user = UserRepository().getCurrentFireUser() {
             let name = self.articleNameTextField.text
             let description = self.articleDescriptionTextView.text
-            let article = Article(userUID: user.uid, name: name!, pictures: [], description: description! , offers: 0, available: true)
+            let article = Article(id: user.uid, userUID: user.uid, name: name!, pictures: [], description: description!, available: true)
             
             if (imagesSelected.count < 1) {
                 showErrorDialogDefault(title: "Ups!",message: "Debes publicar tu articulo con al menos una foto")
@@ -181,7 +181,6 @@ class AddArticleViewController: UIViewController, UIImagePickerControllerDelegat
             myPickerController.sourceType = .camera
             present(myPickerController, animated: true, completion: nil)
         }
-        
     }
     
     private func photoLibrary() {

@@ -9,10 +9,10 @@
 import Foundation
 
 struct Article: Codable {
+    var id: String
     var userUID: String
     var name: String
     var pictures: Array<String>
     var description: String
-    var offers: Int
     var available: Bool
 }

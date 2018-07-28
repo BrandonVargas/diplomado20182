@@ -7,21 +7,30 @@
 //
 
 import RxSwift
+import Firebase
 
-class ArticlesPresenter: ArticlesPresenterDelegate {
-    var view: ArticlesTableView
-    var articlesRepository: ArticlesRepositoryDelegate? = nil
+class ArticlesPresenter {
+    var view: ArticlesTableViewController
+    var articlesRepository: ArticlesRepository? = nil
     let userRepository = UserRepository()
     let disposeBag = DisposeBag()
     
-    init(view: ArticlesTableView) {
+    init(view: ArticlesTableViewController) {
         self.view = view
         articlesRepository = ArticlesRepository()
     }
     
     func loadAndListenAllArticles() {
-        articlesRepository?.getArticlesSubject().subscribe(onNext: { (article) in
-            self.view.addArticle(article: article)
+        articlesRepository?.getArticlesSubject().subscribe(onNext: { (article, diffType) in
+            switch diffType {
+            case DocumentChangeType.added:
+                self.view.addArticle(article)
+                break
+            case .modified:
+                break
+            case .removed:
+                self.view.removeArticle(article)
+            }
         }, onError: { error in
            self.view.showErrorDialogDefault(error: "Ocurrio un error: \(error)")
         }).disposed(by: disposeBag)
@@ -35,9 +44,4 @@ class ArticlesPresenter: ArticlesPresenterDelegate {
             self.view.loadUserPhoto(index: index, stringURL: stringURL)
         }).disposed(by: disposeBag)
     }
-}
-
-protocol ArticlesPresenterDelegate {
-    func loadAndListenAllArticles()
-    func listenToUserPhotos()
 }

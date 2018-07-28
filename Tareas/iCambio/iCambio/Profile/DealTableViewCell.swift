@@ -44,51 +44,38 @@ class DealTableViewCell: UITableViewCell {
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
+        //super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
     }
     
     func setupView() {
+        item!.userOwnerUID.getDocument(completion: { doc, error in
+            let user = try! FirestoreDecoder().decode(User.self, from: doc!.data()!)
+            let resource = ImageResource(downloadURL: URL(string: user.imageURL)!, cacheKey: user.imageURL)
+            self.userOwnerImageView.kf.setImage(with: resource)
+        })
         
-        UserRepository().getUserImageWith(uid: (item!.userOwnerUID))
-            .subscribe(onNext: { documents in
-                if let document = documents.documents.first {
-                    print("Document data: \(document.data())")
-                    let user = try! FirestoreDecoder().decode(User.self, from: document.data())
-                    let resource = ImageResource(downloadURL: URL(string: user.imageURL)!, cacheKey: user.imageURL)
-                    self.userOwnerImageView.kf.setImage(with: resource)
-                }
-            }, onError: { error in
-                print("Hubo un error \(error)")
-            }).disposed(by: self.disposeBag)
-        UserRepository().getUserImageWith(uid: (item!.userOfferingUID))
-            .subscribe(onNext: { documents in
-                if let document = documents.documents.first {
-                    print("Document data: \(document.data())")
-                    let user = try! FirestoreDecoder().decode(User.self, from: document.data())
-                    let resource = ImageResource(downloadURL: URL(string: user.imageURL)!, cacheKey: user.imageURL)
-                    self.userOfferingImageView.kf.setImage(with: resource)
-                }
-            }, onError: { error in
-                print("Hubo un error \(error)")
-            }).disposed(by: self.disposeBag)
-        articlesRepository.getArticleName(id: (item?.itemOwnerId)!)
-            .subscribe(onNext: { name in
-                self.labelOwner.text = name
-            }).disposed(by: self.disposeBag)
-        var labelObservables = [Observable<String>]()
-        for id in (item!.itemsOfferingIds) {
-            labelObservables.append(articlesRepository.getArticleName(id: id))
-        }
-        Observable.zip(labelObservables).subscribe(onNext: { names in
-            for name in names {
+        item!.userOffering.getDocument(completion: { doc, error in
+            let user = try! FirestoreDecoder().decode(User.self, from: doc!.data()!)
+            let resource = ImageResource(downloadURL: URL(string: user.imageURL)!, cacheKey: user.imageURL)
+            self.userOfferingImageView.kf.setImage(with: resource)
+        })
+        
+        item!.itemOwnerId.getDocument(completion: { doc, error in
+            let article = try! FirestoreDecoder().decode(Article.self, from: doc!.data()!)
+            self.labelOwner.text = article.name
+        })
+        
+        for ref in (item?.itemsOfferingIds)! {
+            ref.getDocument(completion: { doc, error in
+                let article = try! FirestoreDecoder().decode(Article.self, from: doc!.data()!)
                 let label = UILabel()
                 label.font = UIFont(name: "Futura", size: 22)
-                label.text = name
+                label.text = article.name
                 self.offeringStackView.addArrangedSubview(label)
-            }
-        }).disposed(by: self.disposeBag)
+            })
+        }
     }
     
 }

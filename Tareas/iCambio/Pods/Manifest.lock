@@ -111,10 +111,8 @@ PODS:
     - gRPC-Core (= 1.10.0)
     - gRPC-RxLibrary (= 1.10.0)
   - GTMSessionFetcher/Core (1.1.15)
-  - IQKeyboardManagerSwift (5.0.8)
   - Kingfisher (4.7.0)
   - leveldb-library (1.20)
-  - MessageKit (1.0.0)
   - nanopb (0.3.8):
     - nanopb/decode (= 0.3.8)
     - nanopb/encode (= 0.3.8)
@@ -145,9 +143,7 @@ DEPENDENCIES:
   - Firebase/Messaging
   - Firebase/Storage
   - FSPagerView
-  - IQKeyboardManagerSwift
   - Kingfisher (~> 4.0)
-  - MessageKit (~> 1.0.0-beta.1)
   - RxFirebase/Firestore
   - RxFirebase/RemoteConfig
 
@@ -177,10 +173,8 @@ SPEC REPOS:
     - gRPC-ProtoRPC
     - gRPC-RxLibrary
     - GTMSessionFetcher
-    - IQKeyboardManagerSwift
     - Kingfisher
     - leveldb-library
-    - MessageKit
     - nanopb
     - Protobuf
     - RxCocoa
@@ -212,16 +206,14 @@ SPEC CHECKSUMS:
   gRPC-ProtoRPC: 22712b23eb1bda656a59715fa5c1da0ea1493ea4
   gRPC-RxLibrary: a41a4652d220f230ba1c0491a94ce2ee04c6180a
   GTMSessionFetcher: 5fa5b80fd20e439ef5f545fb2cb3ca6c6714caa2
-  IQKeyboardManagerSwift: 2e7dc7f98c111458c1ea2b373f893e8cf95e2b97
   Kingfisher: da6b005aa96d37698e3e4f1ccfe96a5b9bbf27d6
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
-  MessageKit: 16160036b16476b04bd0e9f2c7ce67e662e503e4
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   Protobuf: 8a9838fba8dae3389230e1b7f8c104aa32389c03
   RxCocoa: d88ba0f1f6abf040011a9eb4b539324fc426843a
   RxFirebase: 9e2aeb0a611ef37a65461f42666df3ff713b84e3
   RxSwift: e49536837d9901277638493ea537394d4b55f570
 
-PODFILE CHECKSUM: da74b46ba84648b7b5a30e62a155c12a7970ed11
+PODFILE CHECKSUM: 1b4dde9b5d099cecb1f6a87ebbf48b12e2f2f411
 
 COCOAPODS: 1.5.0

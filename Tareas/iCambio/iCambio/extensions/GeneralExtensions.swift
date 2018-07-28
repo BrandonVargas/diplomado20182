@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import CodableFirebase
+import Firebase
 
 extension UIViewController {
     func displaySpinner(onView : UIView) -> UIView {
@@ -42,3 +44,5 @@ extension UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
 }
+
+extension DocumentReference: DocumentReferenceType {}

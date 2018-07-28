@@ -28,6 +28,9 @@
 		CA871806210AA78A0067ACAA /* ArticleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CA871805210AA78A0067ACAA /* ArticleTableViewCell.xib */; };
 		CA871809210AB5EB0067ACAA /* DealTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA871807210AB5EB0067ACAA /* DealTableViewCell.swift */; };
 		CA87180C210AB6840067ACAA /* DealTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CA87180B210AB6840067ACAA /* DealTableViewCell.xib */; };
+		CA87180E210BC3E00067ACAA /* KeyboardLayoutConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA87180D210BC3E00067ACAA /* KeyboardLayoutConstraint.swift */; };
+		CA871810210BFFBF0067ACAA /* ProfilePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA87180F210BFFBF0067ACAA /* ProfilePresenter.swift */; };
+		CA871812210C43E30067ACAA /* ArticleOfferPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA871811210C43E20067ACAA /* ArticleOfferPresenter.swift */; };
 		CA9C52CB20CC24F9007B5811 /* ArticleDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9C52CA20CC24F9007B5811 /* ArticleDetailViewController.swift */; };
 		CAA2ED3C210440360019CCFA /* RatingControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAA2ED3B210440360019CCFA /* RatingControl.swift */; };
 		CAA2ED3E2104515C0019CCFA /* ArticleOffersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAA2ED3D2104515C0019CCFA /* ArticleOffersViewController.swift */; };
@@ -71,6 +74,9 @@
 		CA871805210AA78A0067ACAA /* ArticleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ArticleTableViewCell.xib; sourceTree = "<group>"; };
 		CA871807210AB5EB0067ACAA /* DealTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DealTableViewCell.swift; sourceTree = "<group>"; };
 		CA87180B210AB6840067ACAA /* DealTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DealTableViewCell.xib; sourceTree = "<group>"; };
+		CA87180D210BC3E00067ACAA /* KeyboardLayoutConstraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardLayoutConstraint.swift; sourceTree = "<group>"; };
+		CA87180F210BFFBF0067ACAA /* ProfilePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePresenter.swift; sourceTree = "<group>"; };
+		CA871811210C43E20067ACAA /* ArticleOfferPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleOfferPresenter.swift; sourceTree = "<group>"; };
 		CA9C52CA20CC24F9007B5811 /* ArticleDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleDetailViewController.swift; sourceTree = "<group>"; };
 		CAA2ED3B210440360019CCFA /* RatingControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingControl.swift; sourceTree = "<group>"; };
 		CAA2ED3D2104515C0019CCFA /* ArticleOffersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleOffersViewController.swift; sourceTree = "<group>"; };
@@ -140,6 +146,7 @@
 			children = (
 				CAA2ED3D2104515C0019CCFA /* ArticleOffersViewController.swift */,
 				CAA2ED43210563C20019CCFA /* OfferTableViewCell.swift */,
+				CA871811210C43E20067ACAA /* ArticleOfferPresenter.swift */,
 			);
 			path = ArticleOffers;
 			sourceTree = "<group>";
@@ -186,6 +193,7 @@
 				CA871803210A95A10067ACAA /* ProfileViewModelItems.swift */,
 				CA871807210AB5EB0067ACAA /* DealTableViewCell.swift */,
 				CA87180B210AB6840067ACAA /* DealTableViewCell.xib */,
+				CA87180F210BFFBF0067ACAA /* ProfilePresenter.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -198,6 +206,7 @@
 				CAA2ED3B210440360019CCFA /* RatingControl.swift */,
 				CA217A212106C7AB00DCFD20 /* ArticlesStackView.swift */,
 				CA871801210A948D0067ACAA /* ProtocolModelViewItem.swift */,
+				CA87180D210BC3E00067ACAA /* KeyboardLayoutConstraint.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -377,9 +386,7 @@
 				"${BUILT_PRODUCTS_DIR}/FacebookLogin/FacebookLogin.framework",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
-				"${BUILT_PRODUCTS_DIR}/IQKeyboardManagerSwift/IQKeyboardManagerSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework",
-				"${BUILT_PRODUCTS_DIR}/MessageKit/MessageKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
@@ -402,9 +409,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FacebookLogin.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IQKeyboardManagerSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Kingfisher.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MessageKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
@@ -455,12 +460,15 @@
 				CAA2ED3E2104515C0019CCFA /* ArticleOffersViewController.swift in Sources */,
 				CA82235520771DB500B2D8C0 /* Article.swift in Sources */,
 				CA9C52CB20CC24F9007B5811 /* ArticleDetailViewController.swift in Sources */,
+				CA871812210C43E30067ACAA /* ArticleOfferPresenter.swift in Sources */,
+				CA871810210BFFBF0067ACAA /* ProfilePresenter.swift in Sources */,
 				CA217A222106C7AB00DCFD20 /* ArticlesStackView.swift in Sources */,
 				CA871809210AB5EB0067ACAA /* DealTableViewCell.swift in Sources */,
 				CAF6A47C20E70CE2007EB92E /* Offer.swift in Sources */,
 				CA8717FC21098A670067ACAA /* MessageSenderTableViewCell.swift in Sources */,
 				CAA2ED3C210440360019CCFA /* RatingControl.swift in Sources */,
 				CA8717FE21098A830067ACAA /* MessageReceiverTableViewCell.swift in Sources */,
+				CA87180E210BC3E00067ACAA /* KeyboardLayoutConstraint.swift in Sources */,
 				CA8717F8210968BA0067ACAA /* Chat.swift in Sources */,
 				CACF6994209AB32E001B9C77 /* AddArticleViewController.swift in Sources */,
 				CAF6A47620E490AE007EB92E /* MakeOfferViewController.swift in Sources */,

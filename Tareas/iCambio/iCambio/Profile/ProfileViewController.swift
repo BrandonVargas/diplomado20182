@@ -35,109 +35,82 @@ class ProfileViewController: UIViewController{
     private var spinner: UIView? = nil
     var noUserView = UIView()
     
+    private var profilePresenter: ProfilePresenter? = nil
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        profilePresenter = ProfilePresenter(view: self)
         setupView()
-        prepareUser()
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
+        toogleProfileVisibility(isHidden: true)
+        spinner = displaySpinner(onView: self.view)
+        profilePresenter?.getUser(userUID: Auth.auth().currentUser?.uid ?? "")
     }
     
     func setupView() {
-        noUserView.backgroundColor = UIColor.black
-        noUserView.tag = 101
-        noUserView.frame = view.frame
-        let loginButton = LoginButton(readPermissions: [ .publicProfile, .email ])
-        loginButton.center = self.view.center
-        loginButton.delegate = self as LoginButtonDelegate
-        noUserView.addSubview(loginButton)
         profileTableView.register(UINib(nibName: cellIdentifierArticles, bundle: nil), forCellReuseIdentifier: cellIdentifierArticles)
         profileTableView.register(UINib(nibName: cellIdentifierOffers, bundle: nil), forCellReuseIdentifier: cellIdentifierOffers)
         profileTableView.dataSource = self
         profileTableView.delegate = self
-    }
-    
-    func prepareUser() {
-        items.removeAll()
-        userRepository.fetchCurrentUser().subscribe(onNext: { user in
-            self.currentUser = user
-            if (self.currentUser != nil) {
-                self.toogleProfileVisibility(isHidden: false)
-                self.spinner = self.displaySpinner(onView: self.view)
-                self.getUserSuccessfulOffers()
-            } else {
-                self.toogleProfileVisibility(isHidden: true)
-            }
-        }, onError: { error in
-            if (!(error is RxError)) {
-                self.showErrorDialogDefault(title: "Ups!", message: error.localizedDescription)
-            } else {
-                self.toogleProfileVisibility(isHidden: true)
-            }
-        }).disposed(by: disposeBag)
+        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: self.profileTableView.frame.width, height: 44.0))
+        let loginButton = LoginButton(readPermissions: [ .publicProfile, .email ])
+        loginButton.center = footerView.center
+        loginButton.delegate = self as LoginButtonDelegate
+        footerView.addSubview(loginButton)
+        self.profileTableView.tableFooterView = footerView
     }
     
     func toogleProfileVisibility(isHidden: Bool) {
         userNameLabel.isHidden = isHidden
         userImageView.isHidden = isHidden
-        profileTableView.isHidden = isHidden
         raitngStack.isHidden = isHidden
         ratingLabel.isHidden = isHidden
         
         if (!isHidden && currentUser != nil) {
-            if let viewWithTag = self.view.viewWithTag(101) {
-                viewWithTag.removeFromSuperview()
-            }
-            let footerView = UIView(frame: CGRect(x: 0, y: 0, width: self.profileTableView.frame.width, height: 44.0))
-            let loginButton = LoginButton(readPermissions: [ .publicProfile, .email ])
-            loginButton.center = footerView.center
-            loginButton.delegate = self as LoginButtonDelegate
-            footerView.addSubview(loginButton)
-            self.profileTableView.tableFooterView = footerView
             userNameLabel.text = currentUser!.name
             let resource = ImageResource(downloadURL: URL(string: currentUser!.imageURL)!, cacheKey: currentUser!.imageURL)
             userImageView.kf.setImage(with: resource)
         } else {
-            self.view.addSubview(noUserView)
+            items.removeAll()
         }
+        
+        profileTableView.reloadData()
+        removeSpinner(spinner: spinner)
     }
     
-    func getUserSuccessfulOffers() {
-        offersRepository.getDealsForCurrentUser()
-            .subscribe(onNext: { deals in
-                if (!deals.isEmpty) {
-                    let dealsItem = ProfileViewModelDealItem(deals: deals)
-                    self.items.append(dealsItem)
-                    print("Deals \(String(describing: deals))")
-                    print("Items \(String(describing: self.items))")
-                    self.deals = deals
-                }
-                self.getUserArticles()
-            }, onError: { error in
-                print("Error obteniendo ofertas")
-                self.getUserArticles()
-            }).disposed(by: disposeBag)
+    func bindUserInformation(_ user: User) {
+        currentUser = user
+        userNameLabel.text = currentUser!.name
+        let resource = ImageResource(downloadURL: URL(string: currentUser!.imageURL)!, cacheKey: currentUser!.imageURL)
+        userImageView.kf.setImage(with: resource)
+        toogleProfileVisibility(isHidden: false)
+        profilePresenter?.getUserOffers(user)
+        profilePresenter?.getUserArticlesAvailable(user)
     }
     
-    func getUserArticles() {
-        articlesRepository.getUserAvailableArticles()
-            .subscribe(onNext: { articles in
-                if (!articles.isEmpty){
-                    let articlesItem = ArticleViewModelItem(articles: articles)
-                    self.items.append(articlesItem)
-                    print("Articles \(String(describing: articles))")
-                    print("Items \(String(describing: self.items))")
-                    self.articles = articles
-                }
-                self.profileTableView.reloadData()
-                self.removeSpinner(spinner: self.spinner)
-            }, onError: { error in
-                print("Error obteniendo articulos")
-                self.removeSpinner(spinner: self.spinner)
-                self.profileTableView.reloadData()
-            }).disposed(by: disposeBag)
+    func addUserArticlesAvailable(articles: [Article]) {
+        let articlesItem = ArticleViewModelItem(articles: articles)
+        self.items.append(articlesItem)
+        print("Articles \(String(describing: articles))")
+        print("Items \(String(describing: self.items))")
+        self.articles = articles
+        profileTableView.reloadData()
+    }
+    
+    func addUserOffers(offers: [Offer]) {
+        let dealsItem = ProfileViewModelDealItem(deals: offers)
+        self.items.insert(dealsItem, at: 0)
+        print("Deals \(String(describing: deals))")
+        print("Items \(String(describing: self.items))")
+        self.deals = offers
+        profileTableView.reloadData()
+    }
+    
+    func clearUser() {
+        toogleProfileVisibility(isHidden: true)
+    }
+    
+    func registerUser(_ user: User) {
+        profilePresenter?.registerUser(user)
     }
 }
 
@@ -164,21 +137,15 @@ extension ProfileViewController: LoginButtonDelegate {
                     return
                 }
                 let imageURL = (user?.providerData[0].photoURL?.absoluteString)! + "?type=large"
-                let userData = try! FirestoreEncoder().encode(User(UID: (user?.uid)!,name: (user?.displayName)!, email: (user?.email)!, imageURL: imageURL, rating: nil, comments: nil, settings: nil, location: nil))
-                self.userRepository.saveUser(userData: userData)
-                self.prepareUser()
+                let user = User(UID: (user?.uid)!,name: (user?.displayName)!, email: (user?.email)!, imageURL: imageURL, rating: nil, comments: nil, settings: nil, location: nil, articles: [], offers: [])
+                self.profilePresenter?.loginUser(user)
             })
         }
     }
     
     func loginButtonDidLogOut(_ loginButton: LoginButton) {
         print("Did logout via LoginButton")
-        do {
-            try Auth.auth().signOut()
-            prepareUser()
-        } catch {
-            print("Error on logout via LoginButton")
-        }
+        profilePresenter?.logout()
     }
 }
 

@@ -7,12 +7,14 @@
 //
 
 import Foundation
+import Firebase
 
 struct Article: Codable {
     var id: String
-    var userUID: String
     var name: String
     var pictures: Array<String>
     var description: String
     var available: Bool
+    var user: DocumentReference
+    var offers: [DocumentReference]
 }

@@ -12,10 +12,10 @@ import FirebaseStorage
 import CodableFirebase
 import RxSwift
 
-class ArticlesRepository: BaseRepository, ArticlesRepositoryDelegate {
+class ArticlesRepository: BaseRepository{
 
     let disposeBag = DisposeBag()
-    private let articlesSubject = PublishSubject<Article>()
+    private let articlesSubject = PublishSubject<(Article, DocumentChangeType)>()
     
     override init() {
         super.init()
@@ -41,14 +41,14 @@ class ArticlesRepository: BaseRepository, ArticlesRepositoryDelegate {
                     let article: Article = try! FirestoreDecoder().decode(Article.self, from: diff.document.data())
                     if (diff.type == .added) {
                         print("New article: \(diff.document.data())")
-                        self.articlesSubject.onNext(article)
+                        self.articlesSubject.onNext((article, diff.type))
                     }
                     if (diff.type == .modified) {
                         print("Modified article: \(diff.document.data())")
                     }
                     if (diff.type == .removed) {
                         print("Removed article: \(diff.document.data())")
-                        self.articlesSubject.onNext(article)
+                        self.articlesSubject.onNext((article, diff.type))
                     }
                 }
             }, onError: { error in
@@ -139,7 +139,7 @@ class ArticlesRepository: BaseRepository, ArticlesRepositoryDelegate {
         }
     }
     
-    func getArticlesSubject() -> PublishSubject<Article> {
+    func getArticlesSubject() -> PublishSubject<(Article, DocumentChangeType)> {
         return articlesSubject
     }
     
@@ -175,36 +175,6 @@ class ArticlesRepository: BaseRepository, ArticlesRepositoryDelegate {
                     .addDocument(data: offerData)
     }
     
-    func changeArticleAvailability(documentsIds: Array<String> ,available: Bool) {
-        for documentId in documentsIds {
-            db.collection("articles")
-                .document(documentId)        
-                .updateData(["available": available])
-        }
-    }
-    func getUserAvailableArticles() -> Observable<Array<Article>> {
-        return Observable.create({ observer in
-            self.db.collection("articles")
-                .whereField("userUID", isEqualTo: Auth.auth().currentUser?.uid ?? "")
-                .whereField("available", isEqualTo: true)
-                .order(by: "updatedAt", descending: true)
-                .rx
-                .getDocuments()
-                .subscribe(onNext: { snapshot in
-                    print("User articles: \(snapshot.documents)")
-                    let articles = snapshot.documents.map({ (snapshot) -> Article in
-                        let article = try! FirestoreDecoder().decode(Article.self, from: snapshot.data())
-                        return article
-                    })
-                    observer.onNext(articles)
-                }, onError: { error in
-                    print("Error fetching snapshots: \(error)")
-                    observer.onError(error)
-                }).disposed(by: self.disposeBag)
-            return Disposables.create()
-        })
-    }
-    
     func getArticleName(id: String) -> Observable<String> {
         return db.collection("articles")
             .document(id)
@@ -212,21 +182,73 @@ class ArticlesRepository: BaseRepository, ArticlesRepositoryDelegate {
             .getDocument()
             .flatMap{ document -> Observable<String> in
                 if let article = try? FirestoreDecoder().decode(Article.self, from: (document?.data())!) {
-                   return Observable.just(article.name)
+                    return Observable.just(article.name)
                 } else {
-                   return Observable.just("")
+                    return Observable.just("")
                 }
                 
-            }
+        }
     }
-}
+    
+    func changeArticleAvailability(articles: Array<DocumentReference>, available: Bool) {
+        for article in articles {
+            db.collection("articles")
+                .document(article.documentID)
+                .updateData(["available": available])
+        }
+    }
+    
+    func getUserAvailableArticles(_ user: User) -> Observable<[Article]> {
+        var observables = [Observable<Article>]()
+        for article in user.articles {
+            observables.append(db.collection("articles")
+                .document(article.documentID)
+                .rx
+                .getDocument()
+                .flatMap({ doc -> Observable<Article> in
+                    let article: Article = try! FirestoreDecoder().decode(Article.self, from: (doc?.data())!)
+                    return Observable.just(article)
+                }))
+        }
+        return Observable.zip(observables)
+    }
+    
+    func getArticleOffers(_ article: Article) -> Observable<[Offer]> {
+        var observables = [Observable<Offer>]()
+        for offer in article.offers {
+            observables.append(db.collection("offers")
+                .document(offer.documentID)
+                .rx
+                .getDocument()
+                .flatMap({ doc -> Observable<Offer> in
+                    let offer: Offer = try! FirestoreDecoder().decode(Offer.self, from: (doc?.data())!)
+                    return Observable.just(offer)
+                }))
+        }
+        return Observable.zip(observables)
+    }
+    
+    func getArticleReference(_ article: Article) -> Observable<DocumentReference> {
+        return db.collection("articles")
+            .document(article.id)
+            .rx
+            .getDocument()
+            .flatMap({ doc in
+                return Observable.just((doc?.reference)!)
+            })
+    }
 
-protocol ArticlesRepositoryDelegate {
-    func addArticle(article: Article) -> Observable<DocumentReference>
-    func listenAriticlesUpdates()
-    func getArticlesSubject() -> PublishSubject<Article>
-    func getUserArticles(subject: PublishSubject<Array<Article>>)
-    func addArticleID(id: String, path: String)
-    func makeOffer(offer: Offer) -> Observable<DocumentReference>
-    func changeArticleAvailability(documentsIds: Array<String> ,available: Bool)
+    func getArticlesReferences(_ articles: [Article]) -> Observable<[DocumentReference]> {
+        var observables = [Observable<DocumentReference>]()
+        for article in articles {
+            observables.append(db.collection("articles")
+                .document(article.id)
+                .rx
+                .getDocument()
+                .flatMap({ doc -> Observable<DocumentReference> in
+                return Observable.just((doc?.reference)!)
+                }))
+        }
+        return Observable.zip(observables)
+    }
 }

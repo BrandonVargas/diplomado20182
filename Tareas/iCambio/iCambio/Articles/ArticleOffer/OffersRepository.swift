@@ -76,16 +76,16 @@ class OffersRepository: BaseRepository, OffersRepositoryDelegate {
     }
     
     func declineOffer(_ offer: Offer) -> Observable<Void> {
-        var articlesIds = offer.itemsOfferingIds
-        articlesIds.append(offer.itemOwnerId)
-        articlesRepository.changeArticleAvailability(documentsIds: articlesIds, available: true)
+        var articles = offer.itemsOfferingIds
+        articles.append(offer.itemOwnerId)
+        articlesRepository.changeArticleAvailability(articles: articles, available: true)
         return updateOfferStatus(id: offer.id, status: OfferStates.DECLINED.rawValue)
     }
     
     func acceptOffer(_ offer: Offer) -> Observable<Void> {
-        var articlesIds = offer.itemsOfferingIds
-        articlesIds.append(offer.itemOwnerId)
-        articlesRepository.changeArticleAvailability(documentsIds: articlesIds, available: false)
+        var articles = offer.itemsOfferingIds
+        articles.append(offer.itemOwnerId)
+        articlesRepository.changeArticleAvailability(articles: articles, available: false)
         return updateOfferStatus(id: offer.id, status: OfferStates.SUCCESSFUL.rawValue)
     }
     
@@ -182,6 +182,20 @@ class OffersRepository: BaseRepository, OffersRepositoryDelegate {
                 .disposed(by: self.disposeBag)
             return Disposables.create()
         }
+    }
+    
+    func getArticlesForOffer(_ offer: Offer) -> Observable<[Article]>{
+        return Observable.zip(offer.itemsOfferingIds.compactMap( { doc in
+            self.db.collection("articles")
+                .document(doc.documentID)
+                .rx
+                .getDocument()
+                .flatMap({ art -> Observable<Article> in
+                    let article = try! FirestoreDecoder().decode(Article.self, from: (art?.data())!)
+                    return Observable.just(article)
+                })
+            })
+        )
     }
 }
 

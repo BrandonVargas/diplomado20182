@@ -17,64 +17,50 @@ class UserRepository: BaseRepository {
     let usersImagesSubject: PublishSubject<(IndexPath,String)> = PublishSubject()
     let disposeBag = DisposeBag()
     
-    func saveUser(userData: [String:Any]) {
-        self.db.collection("users")
-            .whereField("UID", isEqualTo: userData["UID"] as! String)
-            .rx
-            .getDocuments()
-            .subscribe(onNext: { documents in
-                if let document = documents.documents.first {
-                    print("Document data: \(document.data())")
-                    let currentUser = try! (FirestoreDecoder().decode(User.self, from: userData))
-                    self.userSubject.onNext(currentUser)
-                    self.updateUserData(updatedData: userData , documentID: document.documentID)
-                } else {
-                    print("Document does not exist")
-                    self.db.collection("users").addDocument(data: userData){
-                        error in
-                        if let error = error {
-                            print("Error al añadir usuario: \(error)")
-                        } else {
-                            print("Usuario añadido")
-                            let currentUser = try! (FirestoreDecoder().decode(User.self, from: userData))
-                            self.userSubject.onNext(currentUser)
-                        }
-                    }
-                }
-            }, onError: { error in
-                print("Hubo un error \(error)")
-            }).disposed(by: disposeBag)
-    }
-    
-    func fetchCurrentUser() -> Observable<User> {
-        // User is signed in.
-        //Auth.auth().currentUser?.getIDToken(completion: )
-        return Observable.create { observer in
-            if Auth.auth().currentUser != nil {
+    func loginUser(user: User) -> Observable<User>{
+        return Observable.create({ observer in
             self.db.collection("users")
-                .whereField("UID", isEqualTo: Auth.auth().currentUser?.uid ?? "")
+                .whereField("UID", isEqualTo: user.UID)
                 .rx
                 .getDocuments()
                 .subscribe(onNext: { documents in
                     if let document = documents.documents.first {
-                        print("Document data: \(document.data())")
                         let user = try! FirestoreDecoder().decode(User.self, from: document.data())
+                        self.updateUserData(updatedData: document.data() , documentID: document.documentID)
                         observer.onNext(user)
-                        self.userSubject.onNext(user)
+                    } else {
+                        print("Document does not exist")
+                        observer.onError(RxError.noElements)
                     }
                 }, onError: { error in
-                    print("Hubo un error \(error)")
                     observer.onError(error)
-                    self.userSubject.onError(error)
                 }).disposed(by: self.disposeBag)
-            } else {
-                // No user is signed in.
-                observer.onError(RxError.noElements)
-                self.userSubject.onError(RxError.noElements)
-                print("No authenticated")
-            }
             return Disposables.create()
-        }
+        })
+    }
+    
+    func registerUser(_ user: User) -> Observable<User> {
+        var userData = try! FirestoreEncoder().encode(user)
+        userData["createdAt"] = Timestamp()
+        return self.db.collection("users")
+            .addDocument(data: userData)
+            .rx
+            .getDocument()
+            .flatMap({ doc -> Observable<User> in
+                let user = try! FirestoreDecoder().decode(User.self, from: (doc?.data())!)
+                return Observable.just(user)
+            })
+    }
+    
+    func fetchCurrentUserReference() -> Observable<DocumentReference> {
+        let userId = Auth.auth().currentUser?.uid ?? ""
+        return self.db.collection("users")
+            .whereField("UID", isEqualTo: userId)
+            .rx
+            .getDocuments()
+            .flatMap({ query -> Observable<DocumentReference> in
+                return Observable.just(query.documents[0].reference)
+            })
     }
     
     func getCurrentFireUser() -> Firebase.User? {
@@ -109,8 +95,12 @@ class UserRepository: BaseRepository {
                 .rx
                 .getDocuments()
                 .subscribe(onNext: { snapshot in
-                    let user = try! FirestoreDecoder().decode(User.self, from: snapshot.documents[0].data())
-                    observer.onNext(user)
+                    if (!snapshot.documents.isEmpty){
+                        let user = try! FirestoreDecoder().decode(User.self, from: snapshot.documents[0].data())
+                        observer.onNext(user)
+                    } else {
+                        observer.onError(RxError.noElements)
+                    }
                 }, onError: { error in
                     observer.onError(error)
                     print("Error obteniendo usuario con UID: \(uid)")
@@ -120,18 +110,36 @@ class UserRepository: BaseRepository {
     }
     
     private func updateUserData(updatedData: [String:Any], documentID: String) {
-        //TODO: Format fields to match with firebase from here?
         db.collection("users")
             .document(documentID)
-            .rx
             .updateData(updatedData)
-            .subscribe(onNext: { _ in
-                    print("Document successfully updated")
-                    let currentUser = try! (FirestoreDecoder().decode(User.self, from: updatedData))
-                }, onError: { error in
-                    print("Document not updated \(error)")
-                })
-            .disposed(by: disposeBag)
+    }
+    
+    func getUserOffers(_ user: User) -> Observable<[Offer]> {
+        var observables = [Observable<Offer>]()
+        for offer in user.offers {
+            observables.append(db.collection("offers")
+                .document(offer.documentID)
+                .rx
+                .getDocument()
+                .flatMap({ doc -> Observable<Offer> in
+                    let offer: Offer = try! FirestoreDecoder().decode(Offer.self, from: (doc?.data())!)
+                    return Observable.just(offer)
+                }))
+        }
+        return Observable.zip(observables)
+    }
+    
+    func logout() -> Observable<Bool> {
+        return Observable.create( { observer in
+            do {
+                try Auth.auth().signOut()
+                observer.onNext(true)
+            } catch {
+                observer.onNext(false)
+            }
+            return Disposables.create()
+        })
         
     }
 }

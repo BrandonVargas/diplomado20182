@@ -16,6 +16,7 @@ class ChatViewController: UIViewController {
     @IBOutlet weak var messagesTableView: UITableView!
     @IBOutlet weak var messageTextField: UITextField!
     @IBOutlet weak var sendButton: UIButton!
+    @IBOutlet weak var bottomView: UIView!
     
     let CELL_SENDER = "MessageSenderTableViewCell"
     let CELL_RECEIVER = "MessageReceiverTableViewCell"
@@ -52,10 +53,44 @@ class ChatViewController: UIViewController {
             }).disposed(by: disposeBag)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange(notification:)),
+                                               name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide),
+                                               name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
+    @objc func keyboardWillHide() {
+        self.view.frame.origin.y = 0
+    }
+    
+    @objc func keyboardWillChange(notification: NSNotification) {
+        
+        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            if  messageTextField.isFirstResponder {
+                self.view.frame.origin.y = -keyboardSize.height
+            }
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        NotificationCenter.default.removeObserver(self,
+                                                  name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+        NotificationCenter.default.removeObserver(self,
+                                                  name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
     @IBAction func sendButtonClicked(_ sender: UIButton) {
         if let text = messageTextField.text {
             let message = Message(message: text, senderId: (Auth.auth().currentUser?.uid ?? ""))
             chatRepo.sendMessage(chatId: chat!.id, message: message)
+            messageTextField.text = ""
+            scrollToBottom()
         }
     }
     
@@ -68,6 +103,13 @@ class ChatViewController: UIViewController {
             }, onError: { error in
                 print("Hubo un error al obtener los mensajes: \(error)")
             }).disposed(by: disposeBag)
+    }
+    
+    func scrollToBottom(){
+        DispatchQueue.main.async {
+            let indexPath = IndexPath(row: self.messageList.count-1, section: 0)
+            self.messagesTableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+        }
     }
 }
 

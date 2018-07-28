@@ -572,21 +572,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="OUJ-KJ-Fvh">
-                                <rect key="frame" x="16" y="748" width="299" height="30"/>
-                                <nil key="textColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5iB-x9-j7N">
-                                <rect key="frame" x="323" y="748" width="36" height="30"/>
-                                <state key="normal" title="Send"/>
-                                <connections>
-                                    <action selector="sendButtonClicked:" destination="H8M-Ed-UnD" eventType="touchUpInside" id="Jjs-Xh-qbU"/>
-                                </connections>
-                            </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="hWw-bC-nXD">
-                                <rect key="frame" x="0.0" y="44" width="375" height="704"/>
+                                <rect key="frame" x="0.0" y="44" width="375" height="694"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="MessageSenderTableViewCell" rowHeight="51" id="yBu-MJ-mVI" customClass="MessageSenderTableViewCell" customModule="iCambio" customModuleProvider="target">
@@ -643,23 +630,50 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7Ni-xR-XLH">
+                                <rect key="frame" x="0.0" y="738" width="375" height="40"/>
+                                <subviews>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="OUJ-KJ-Fvh">
+                                        <rect key="frame" x="8" y="0.0" width="315" height="40"/>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5iB-x9-j7N">
+                                        <rect key="frame" x="331" y="8" width="36" height="24"/>
+                                        <state key="normal" title="Send"/>
+                                        <connections>
+                                            <action selector="sendButtonClicked:" destination="H8M-Ed-UnD" eventType="touchUpInside" id="Jjs-Xh-qbU"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="5iB-x9-j7N" firstAttribute="leading" secondItem="OUJ-KJ-Fvh" secondAttribute="trailing" constant="8" id="5zF-fy-Yvh"/>
+                                    <constraint firstAttribute="bottom" secondItem="OUJ-KJ-Fvh" secondAttribute="bottom" id="EIV-nW-GcI"/>
+                                    <constraint firstItem="OUJ-KJ-Fvh" firstAttribute="top" secondItem="7Ni-xR-XLH" secondAttribute="top" id="GbQ-lF-x0V"/>
+                                    <constraint firstAttribute="height" constant="40" id="WHT-A8-LCr"/>
+                                    <constraint firstItem="OUJ-KJ-Fvh" firstAttribute="leading" secondItem="7Ni-xR-XLH" secondAttribute="leading" constant="8" id="WRV-1j-7Sg"/>
+                                    <constraint firstItem="5iB-x9-j7N" firstAttribute="top" secondItem="7Ni-xR-XLH" secondAttribute="top" constant="8" id="ftT-Rw-4BV"/>
+                                    <constraint firstAttribute="trailing" secondItem="5iB-x9-j7N" secondAttribute="trailing" constant="8" id="je9-P0-2Yi"/>
+                                    <constraint firstAttribute="bottom" secondItem="5iB-x9-j7N" secondAttribute="bottom" constant="8" id="tAr-c1-wn5"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="OUJ-KJ-Fvh" firstAttribute="top" secondItem="hWw-bC-nXD" secondAttribute="bottom" id="0wN-Pm-mNb"/>
-                            <constraint firstItem="5iB-x9-j7N" firstAttribute="bottom" secondItem="FaN-Aa-ulD" secondAttribute="bottom" id="3xl-u2-If0"/>
-                            <constraint firstItem="FaN-Aa-ulD" firstAttribute="trailing" secondItem="5iB-x9-j7N" secondAttribute="trailing" constant="16" id="LWk-hL-HC9"/>
-                            <constraint firstItem="5iB-x9-j7N" firstAttribute="leading" secondItem="OUJ-KJ-Fvh" secondAttribute="trailing" constant="8" id="Ng9-Na-hay"/>
-                            <constraint firstItem="OUJ-KJ-Fvh" firstAttribute="bottom" secondItem="FaN-Aa-ulD" secondAttribute="bottom" id="T5H-kW-G91"/>
-                            <constraint firstItem="FaN-Aa-ulD" firstAttribute="trailing" secondItem="hWw-bC-nXD" secondAttribute="trailing" id="ia0-j7-1B5"/>
-                            <constraint firstItem="hWw-bC-nXD" firstAttribute="leading" secondItem="FaN-Aa-ulD" secondAttribute="leading" id="oIV-ST-D9s"/>
-                            <constraint firstItem="5iB-x9-j7N" firstAttribute="leading" secondItem="OUJ-KJ-Fvh" secondAttribute="trailing" constant="8" id="qul-Im-9H9"/>
-                            <constraint firstItem="OUJ-KJ-Fvh" firstAttribute="leading" secondItem="FaN-Aa-ulD" secondAttribute="leading" constant="16" id="ux3-Ut-Fyh"/>
-                            <constraint firstItem="hWw-bC-nXD" firstAttribute="top" secondItem="FaN-Aa-ulD" secondAttribute="top" id="yvq-8X-8m0"/>
+                            <constraint firstItem="hWw-bC-nXD" firstAttribute="trailing" secondItem="FaN-Aa-ulD" secondAttribute="trailing" id="74v-SX-PRY"/>
+                            <constraint firstItem="hWw-bC-nXD" firstAttribute="leading" secondItem="FaN-Aa-ulD" secondAttribute="leading" id="Icn-Vp-7nV"/>
+                            <constraint firstItem="7Ni-xR-XLH" firstAttribute="bottom" secondItem="FaN-Aa-ulD" secondAttribute="bottom" id="X6G-WM-ggv"/>
+                            <constraint firstItem="7Ni-xR-XLH" firstAttribute="leading" secondItem="FaN-Aa-ulD" secondAttribute="leading" id="ZAi-bq-HnR"/>
+                            <constraint firstItem="FaN-Aa-ulD" firstAttribute="trailing" secondItem="7Ni-xR-XLH" secondAttribute="trailing" id="aFo-S1-7Ba"/>
+                            <constraint firstItem="hWw-bC-nXD" firstAttribute="top" secondItem="FaN-Aa-ulD" secondAttribute="top" id="l2P-Fz-lLG"/>
+                            <constraint firstItem="7Ni-xR-XLH" firstAttribute="top" secondItem="hWw-bC-nXD" secondAttribute="bottom" id="ug8-HA-SH3"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="FaN-Aa-ulD"/>
                     </view>
                     <connections>
+                        <outlet property="bottomView" destination="7Ni-xR-XLH" id="rmH-RN-Y5n"/>
                         <outlet property="messageTextField" destination="OUJ-KJ-Fvh" id="JcS-il-YZq"/>
                         <outlet property="messagesTableView" destination="hWw-bC-nXD" id="ChY-Mg-TAo"/>
                         <outlet property="sendButton" destination="5iB-x9-j7N" id="5Rg-Q5-TYT"/>

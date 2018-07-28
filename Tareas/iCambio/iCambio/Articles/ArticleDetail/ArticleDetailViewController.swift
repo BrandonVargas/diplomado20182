@@ -10,6 +10,7 @@ import UIKit
 import FSPagerView
 import Kingfisher
 import FirebaseAuth
+import CodableFirebase
 import RxSwift
 
 class ArticleDetailViewController: UIViewController {
@@ -31,8 +32,6 @@ class ArticleDetailViewController: UIViewController {
     
     var article: Article? = nil
     var canMakeOffers: Bool = true
-    private var offersRepo = OffersRepository()
-    private var disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,15 +40,16 @@ class ArticleDetailViewController: UIViewController {
     
     func setupView() {
         if(canMakeOffers) {
-            offersRepo.hasUserOfferedFor(userId: Auth.auth().currentUser?.uid ?? "", articleId: (article?.id)!)
-                .subscribe(onNext: { hasOffered in
-                    self.offersButton.isEnabled = !hasOffered
+            article?.user.getDocument(completion: { doc, error in
+                let user = try! FirestoreDecoder().decode(User.self, from: (doc?.data())!)
+                if (user.UID == Auth.auth().currentUser?.uid){
+                    self.offersButton.setTitle("Revisar ofertas", for: .normal)
+                    self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Editar", style: .done, target: self, action: #selector(self.editArticle))
+                } else if (user.offers.contains(where: (self.article?.offers.contains)!)) {
+                    self.offersButton.isEnabled = false
                     self.offersButton.setTitle("Ofertaste", for: .disabled)
-                }).disposed(by: disposeBag)
-            if (article?.userUID == Auth.auth().currentUser?.uid){
-                offersButton.setTitle("Revisar ofertas", for: .normal)
-                navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Editar", style: .done, target: self, action: #selector(editArticle))
-            }
+                }
+            })
         } else {
             offersButton.isHidden = true
         }
@@ -66,20 +66,23 @@ class ArticleDetailViewController: UIViewController {
     }
     
     @IBAction func offersButtonClicked(_ sender: UIButton) {
-        if let user = UserRepository().getCurrentFireUser() {
-            if (user.uid == article?.userUID) {
-                let articleOffersViewController: ArticleOffersViewController = storyboard?.instantiateViewController(withIdentifier: "ArticleOffersViewController") as! ArticleOffersViewController
-                articleOffersViewController.article = article
-                self.navigationController?.pushViewController(articleOffersViewController, animated: true)
+        article?.user.getDocument(completion: { doc, error in
+            let user = try! FirestoreDecoder().decode(User.self, from: (doc?.data())!)
+            if (Auth.auth().currentUser != nil) {
+                if (user.UID == Auth.auth().currentUser?.uid) {
+                    let articleOffersViewController: ArticleOffersViewController = self.storyboard?.instantiateViewController(withIdentifier: "ArticleOffersViewController") as! ArticleOffersViewController
+                    articleOffersViewController.article = self.article
+                    self.navigationController?.pushViewController(articleOffersViewController, animated: true)
+                } else {
+                    let makeOfferViewController: MakeOfferViewController = self.storyboard?.instantiateViewController(withIdentifier: "MakeOfferViewController") as! MakeOfferViewController
+                    makeOfferViewController.selectedArticle = self.article
+                    self.navigationController?.pushViewController(makeOfferViewController, animated: true)
+                }
             } else {
-                let makeOfferViewController: MakeOfferViewController = storyboard?.instantiateViewController(withIdentifier: "MakeOfferViewController") as! MakeOfferViewController
-                makeOfferViewController.selectedArticle = article
-                self.navigationController?.pushViewController(makeOfferViewController, animated: true)
+                let profileViewController: ProfileViewController = self.storyboard?.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
+                self.navigationController?.pushViewController(profileViewController, animated: true)
             }
-        } else {
-            let profileViewController: ProfileViewController = storyboard?.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
-            self.navigationController?.pushViewController(profileViewController, animated: true)
-        }
+        })
     }
     
     @objc func editArticle() {

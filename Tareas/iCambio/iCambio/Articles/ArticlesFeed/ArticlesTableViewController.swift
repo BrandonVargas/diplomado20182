@@ -11,11 +11,11 @@ import RxSwift
 import Kingfisher
 import CodableFirebase
 
-class ArticlesTableViewController: UITableViewController, ArticlesTableView {
+class ArticlesTableViewController: UITableViewController {
 
     @IBOutlet var articlesTableView: UITableView!
     private var articles: Array<Article> = []
-    var articlesPresenter: ArticlesPresenterDelegate? = nil
+    var articlesPresenter: ArticlesPresenter? = nil
     var userUrls: Array<URL> = [].map { URL(string: $0)! }
     let disposeBag = DisposeBag()
     let cellIdentifier = "ArticleTableViewCell"
@@ -51,15 +51,7 @@ class ArticlesTableViewController: UITableViewController, ArticlesTableView {
         
         cell.item = article
         
-        /*UserRepository().getUserImageWith(uid: article.userUID, atIndex: indexPath)
-            .subscribe(onNext: { url in
-                let resource = ImageResource(downloadURL: URL(string: url)!, cacheKey: url)
-                cell.userImageView.kf.setImage(with: resource)
-            }, onError: { error in
-                print("Hubo un error \(error)")
-            }).disposed(by: self.disposeBag)*/
-        
-        UserRepository().getUserImageWith(uid: article.userUID)
+        UserRepository().getUserImageWith(uid: article.user.documentID)
             .subscribe(onNext: { documents in
                 if let document = documents.documents.first {
                     print("Document data: \(document.data())")
@@ -86,11 +78,14 @@ class ArticlesTableViewController: UITableViewController, ArticlesTableView {
         articlesPresenter?.loadAndListenAllArticles()
     }
     
-    func addArticle(article: Article) {
+    func addArticle(_ article: Article) {
+        articles.insert(article, at: 0)
+        articlesTableView.reloadData()
+    }
+    
+    func removeArticle(_ article: Article) {
         if (articles.contains(where: {art in art.id == article.id})){
             articles = articles.filter{ $0.id != article.id }
-        } else {
-            articles.insert(article, at: 0)
         }
         articlesTableView.reloadData()
     }
@@ -104,10 +99,4 @@ class ArticlesTableViewController: UITableViewController, ArticlesTableView {
     func showErrorDialogDefault(error: String) {
         showErrorDialogDefault(title: "Ocurrio un error", message: error)
     }
-}
-
-protocol ArticlesTableView {
-    func addArticle(article: Article)
-    func loadUserPhoto(index: IndexPath, stringURL: String)
-    func showErrorDialogDefault(error: String)
 }

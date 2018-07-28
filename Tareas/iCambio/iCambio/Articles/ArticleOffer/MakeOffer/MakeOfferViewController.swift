@@ -9,6 +9,8 @@
 import UIKit
 import Kingfisher
 import RxSwift
+import CodableFirebase
+import Firebase
 
 class MakeOfferViewController: UIViewController {
     
@@ -16,17 +18,22 @@ class MakeOfferViewController: UIViewController {
     
     var selectedArticle: Article? = nil
     private var CELL_IDENTIFIER = "OfferArticleViewCell"
-    private var makeOfferPresenter: MakeOfferPresenterDelegate? = nil
-    private var offersRepo: OffersRepository? = nil
-    private var userArticles: Array<Article> = []
+    private var makeOfferPresenter: MakeOfferPresenter? = nil
+    private var userArticles = [Article]()
+    private var selectedArticles = [Article]()
     private var disposeBag = DisposeBag()
+    private var spinner: UIView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        spinner = displaySpinner(onView: self.view)
         setupView()
-        offersRepo = OffersRepository()
         makeOfferPresenter = MakeOfferPresenter(view: self)
-        makeOfferPresenter?.getUserArticles()
+        makeOfferPresenter?.getCurrentUser(userUID: (Auth.auth().currentUser?.uid)!)
+    }
+    
+    func bindUserInformation(_ user: User) {
+        self.makeOfferPresenter?.getUserArticles(user)
     }
     
     private func setupView() {
@@ -36,14 +43,16 @@ class MakeOfferViewController: UIViewController {
     }
     
     @IBAction func iCambioClicked(_ sender: UIButton) {
-        makeOfferPresenter?.makeOffer(article: selectedArticle!, articlesOffered: userArticles)
+        for index in articlesTableView.indexPathsForSelectedRows! {
+            selectedArticles.append(userArticles[index.row])
+        }
+        makeOfferPresenter?.makeOffer(article: selectedArticle!, articlesOffered: selectedArticles)
     }
-}
-
-extension MakeOfferViewController: MakeOfferViewDelegate {
-    func pupulateArticles(_ articles: Array<Article>) {
+    
+    func populateArticles(_ articles: Array<Article>) {
         userArticles.append(contentsOf: articles)
         self.articlesTableView.reloadData()
+        self.removeSpinner(spinner: self.spinner)
     }
     
     func showSuccessDialogAndExit() {
@@ -67,19 +76,8 @@ extension MakeOfferViewController: UITableViewDataSource {
         
         cell.articleNameLabel.text = article.name
         
-        offersRepo?.getOffersQuantity(userId: article.userUID, articleId: article.id)
-            .subscribe(onNext: { offersQty in
-                cell.articleOffersLabel.text = "\(offersQty)  oferta" + ((offersQty == 1) ? "":"s")
-            }, onError: {error in
-                cell.articleOffersLabel.text = ""
-            }
-        ).disposed(by: self.disposeBag)
+        cell.articleOffersLabel.text = "\(article.offers.count)  oferta" + ((article.offers.count == 1) ? "":"s")
         
         return cell
     }
-}
-
-protocol MakeOfferViewDelegate {
-    func pupulateArticles(_ articles: Array<Article>)
-    func showSuccessDialogAndExit()
 }

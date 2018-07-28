@@ -7,14 +7,15 @@
 //
 
 import Foundation
+import Firebase
 
 struct Offer: Codable {
     var id: String
     var status: Int
-    var userOfferingUID: String
-    var userOwnerUID: String
-    var itemOwnerId: String
-    var itemsOfferingIds: [String]
+    var userOffering: DocumentReference
+    var userOwnerUID: DocumentReference
+    var itemOwnerId: DocumentReference
+    var itemsOfferingIds: [DocumentReference]
 }
 
 enum OfferStates: Int, Codable{

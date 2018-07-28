@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Firebase
 
 struct User: Codable {
     var UID: String
@@ -17,6 +18,8 @@ struct User: Codable {
     var comments: Array<Comment>?
     var settings: Settings?
     var location: Geopoint?
+    var articles: [DocumentReference]
+    var offers: [DocumentReference]
 }
 
 struct Geopoint: Codable {

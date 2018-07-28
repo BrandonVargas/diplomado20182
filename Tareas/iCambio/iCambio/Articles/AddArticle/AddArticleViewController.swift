@@ -143,22 +143,22 @@ class AddArticleViewController: UIViewController, UIImagePickerControllerDelegat
     }
 
     @IBAction func publishArticleClicked(_ sender: UIButton) {
-        if let user = UserRepository().getCurrentFireUser() {
+        UserRepository().fetchCurrentUserReference().subscribe(onNext: { docRef in
             let name = self.articleNameTextField.text
             let description = self.articleDescriptionTextView.text
-            let article = Article(id: user.uid, userUID: user.uid, name: name!, pictures: [], description: description!, available: true)
+            let article = Article(id: "", name: name!, pictures: [], description: description!, available: true, user: docRef, offers: [])//(id: user.uid, userUID: user.uid, name: name!, pictures: [], description: description!, available: true)
             
-            if (imagesSelected.count < 1) {
-                showErrorDialogDefault(title: "Ups!",message: "Debes publicar tu articulo con al menos una foto")
+            if (self.imagesSelected.count < 1) {
+                self.showErrorDialogDefault(title: "Ups!",message: "Debes publicar tu articulo con al menos una foto")
             } else if (name?.isEmpty)!{
-                showErrorDialogDefault(title: "Ups!",message: "Tu articulo necesita un nombre")
+                self.showErrorDialogDefault(title: "Ups!",message: "Tu articulo necesita un nombre")
             }else {
-                addArticlePresenter?.publishArticle(article: article, imagesSelected:imagesSelected)
+                self.addArticlePresenter?.publishArticle(article: article, imagesSelected: self.imagesSelected)
             }
-        } else {
-            let profileViewController: ProfileViewController = storyboard?.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
+        }, onError: { error in
+            let profileViewController: ProfileViewController = self.storyboard?.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
             self.navigationController?.pushViewController(profileViewController, animated: true)
-        }
+        }).disposed(by: disposeBag)
     }
     
     func toggle(loading: Bool) {
